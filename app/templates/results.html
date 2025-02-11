@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Event Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Events in {{ location }} on {{ date }}</h2>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary">New Search</a>
+        </div>
+    </div>
+
+    {% if events and events|length > 0 %}
+    <div class="row">
+        {% for event in events %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                {% if event.image_url %}
+                <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.title }}</h5>
+                    <p class="card-text text-muted">
+                        <small>
+                            {% if event.venue %}<i class="fas fa-map-marker-alt"></i> {{ event.venue }}<br>{% endif %}
+                            {% if event.date %}<i class="far fa-calendar-alt"></i> {{ event.date }}{% endif %}
+                        </small>
+                    </p>
+                    {% if event.description %}
+                    <p class="card-text">{{ event.description[:200] }}{% if event.description|length > 200 %}...{% endif %}</p>
+                    {% endif %}
+                    {% if event.url and event.url != '#' %}
+                    <a href="{{ event.url }}" target="_blank" class="btn btn-primary">View Details</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">No Events Found</h4>
+        {% if message %}
+        <p>{{ message }}</p>
+        {% else %}
+        <p>Sorry, we couldn't find any events in {{ location }} for {{ date }}. Try:</p>
+        {% endif %}
+        <ul>
+            <li>Checking a different date (most venues post events 2-4 weeks in advance)</li>
+            <li>Searching for a nearby city</li>
+            <li>Using a more general location (e.g., "New York" instead of "Brooklyn")</li>
+        </ul>
+        <hr>
+        <p class="mb-0">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary">Try Another Search</a>
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
